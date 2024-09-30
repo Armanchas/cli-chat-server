@@ -3,14 +3,14 @@ import java.net.*;
 import java.util.*;
 
 public class ChatServer {
-    private static final int PORT = 9999;
+    private static final int PORT = 9999; // Por favor cambie el puerto para que coincida con el suyo. En nuestro caso es 9999.
     private static List<ObjectOutputStream> outputStreams = Collections.synchronizedList(new ArrayList<>());
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Servidor iniciado en el puerto " + PORT);
+            System.out.println("Server initiated in port: " + PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Nuevo cliente conectado: " + socket);
+                System.out.println("New connected client: " + socket);
                 ClientHandler handler = new ClientHandler(socket);
                 new Thread(handler).start();
             }
@@ -36,7 +36,7 @@ public class ChatServer {
                 }
                 while (true) {
                     String message = (String) in.readObject();
-                    System.out.println("Mensaje recibido: " + message);
+                    System.out.println("Received message: " + message);
                     synchronized (outputStreams) {
                         for (ObjectOutputStream clientOut : outputStreams) {
                             clientOut.writeObject(message);
@@ -45,9 +45,9 @@ public class ChatServer {
                     }
                 }
             } catch (IOException ex) {
-                System.err.println("Error de conexión con el cliente: " + ex.getMessage());
+                System.err.println("Error of connexion with the client: " + ex.getMessage());
             } catch (ClassNotFoundException ex) {
-                System.err.println("Error de clase no encontrada: " + ex.getMessage());
+                System.err.println(ex.getMessage());
             } finally {
                 if (outputStream != null) {
                     synchronized (outputStreams) {
@@ -57,17 +57,17 @@ public class ChatServer {
                 try {
                     if (in != null) in.close();
                 } catch (IOException ex) {
-                    System.err.println("Error cerrando ObjectInputStream: " + ex.getMessage());
+                    System.err.println("Error closing ObjectInputStream: " + ex.getMessage());
                 }
                 try {
                     if (outputStream != null) outputStream.close();
                 } catch (IOException ex) {
-                    System.err.println("Error cerrando ObjectOutputStream: " + ex.getMessage());
+                    System.err.println("Error closing ObjectOutputStream: " + ex.getMessage());
                 }
                 try {
                     if (socket != null) socket.close();
                 } catch (IOException ex) {
-                    System.err.println("Error cerrando socket: " + ex.getMessage());
+                    System.err.println("Error closing socket: " + ex.getMessage());
                 }
             }
         }
